@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Records - Symptom Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #1e2a44, #2c3e50);
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .header-section {
+            background: #2c3e50;
+        }
+
+        .header-section h1 {
+            font-size: 28px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        [data-theme="dark"] .header-section h1 {
+            color: #1e90ff;
+        }
+
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+
+        .back-home:hover {
+            background: #764ba2;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .stat-card {
+            background: #2c3e50;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        [data-theme="dark"] .stat-card .number {
+            color: #1e90ff;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            transition: border-color 0.3s;
+        }
+
+        [data-theme="dark"] .search-box {
+            background: #2c3e50;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .clear-btn {
+            padding: 12px 20px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+        }
+
+        .patients-table {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .patients-table {
+            background: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        [data-theme="dark"] table td {
+            border-bottom-color: #444;
+        }
+
+        table tbody tr {
+            transition: background 0.3s;
+        }
+
+        table tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        [data-theme="dark"] table tbody tr:hover {
+            background: #334455;
+        }
+
+        .prediction-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #3498db;
+            color: #fff;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .prediction-badge.high {
+            background: #e74c3c;
+        }
+
+        .symptoms-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        [data-theme="dark"] .symptoms-cell {
+            color: #b0bec5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        [data-theme="dark"] .empty-state {
+            color: #b0bec5;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+
+        [data-theme="dark"] .empty-state i {
+            color: #555;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1>
+                <i class="fas fa-database"></i> Patient Records
+            </h1>
+            <a href="/" class="back-home">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="number" id="total-patients">0</div>
+                <div class="label">Total Patients</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="avg-age">0</div>
+                <div class="label">Average Age</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="unique-diseases">0</div>
+                <div class="label">Unique Diseases</div>
+            </div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-box" 
+                id="searchInput" 
+                placeholder="🔍 Search by name, age, or disease..."
+            >
+            <button class="clear-btn" onclick="clearAllData()">
+                <i class="fas fa-trash"></i> Clear All Data
+            </button>
+        </div>
+
+        <!-- Patient Table -->
+        <div class="patients-table">
+            <table id="patientsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">#</th>
+                        <th style="width: 15%">Name</th>
+                        <th style="width: 10%">Age</th>
+                        <th style="width: 40%">Symptoms</th>
+                        <th style="width: 20%">Predicted Disease</th>
+                        <th style="width: 10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="patientTableBody">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <p>No patient records found</p>
+            <p style="font-size: 13px; color: #95a5a6;">Start a new diagnosis to create patient records</p>
+        </div>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon();
+
+        // Fetch patient data
+        async function loadPatients() {
+            try {
+                const response = await fetch('/api/patients');
+                const patients = await response.json();
+                
+                if (patients.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    document.querySelector('.patients-table').style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('emptyState').style.display = 'none';
+                document.querySelector('.patients-table').style.display = 'block';
+
+                // Update stats
+                document.getElementById('total-patients').textContent = patients.length;
+                
+                const avgAge = patients.length > 0 
+                    ? Math.round(patients.reduce((sum, p) => sum + parseInt(p.age || 0), 0) / patients.length)
+                    : 0;
+                document.getElementById('avg-age').textContent = avgAge;
+
+                const uniqueDiseases = new Set(patients.map(p => p.prediction)).size;
+                document.getElementById('unique-diseases').textContent = uniqueDiseases;
+
+                // Populate table
+                const tbody = document.getElementById('patientTableBody');
+                tbody.innerHTML = '';
+                
+                patients.forEach((patient, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><strong>${patient.name}</strong></td>
+                        <td>${patient.age}</td>
+                        <td>
+                            <div class="symptoms-cell" title="${patient.symptoms}">
+                                ${patient.symptoms}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="prediction-badge">${patient.prediction}</span>
+                        </td>
+                        <td>
+                            <button onclick="deletePatient(${patient.id})" style="padding: 6px 10px; background: #e74c3c; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">
+                                🗑️ Delete
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Store for search
+                window.allPatients = patients;
+            } catch (error) {
+                console.error('Error loading patients:', error);
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tbody = document.getElementById('patientTableBody');
+            const rows = tbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Delete patient
+        async function deletePatient(patientId) {
+            if (confirm('Are you sure you want to delete this patient record?')) {
+                try {
+                    const response = await fetch(`/api/patients/${patientId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        alert('Patient record deleted!');
+                        loadPatients();
+                    }
+                } catch (error) {
+                    console.error('Error deleting patient:', error);
+                }
+            }
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete ALL patient records? This cannot be undone.')) {
+                fetch('/api/patients/clear-all', {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        alert('All patient records cleared!');
+                        loadPatients();
+                    }
+                }).catch(error => console.error('Error:', error));
+            }
+        }
+
+        // Load patients on page load
+        loadPatients();
+    </script>
+</body>
+</html>

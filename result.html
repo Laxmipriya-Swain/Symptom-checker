@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result - Symptom Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #16223a, #1a3a52);
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: #3d4a57;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid #2a3640;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #016ad0, #00cc99);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .back-btn {
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .header-spacer {
+            width: 28px;
+            flex-shrink: 0;
+        }
+
+        .content {
+            padding: 40px 35px;
+            text-align: center;
+            background: #3d4a57;
+        }
+
+        .patient-info-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a2d3f;
+            border: 2px solid #3dd9ff;
+            border-radius: 11px;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+        }
+
+        .patient-details {
+            text-align: left;
+            flex: 1;
+        }
+
+        .patient-details div {
+            font-size: 15px;
+            margin: 5px 0;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .stethoscope-icon {
+            font-size: 45px;
+            color: #3dd9ff;
+            margin-left: 22px;
+            flex-shrink: 0;
+        }
+
+        .condition-label {
+            font-size: 15px;
+            color: #a8bcc6;
+            margin-bottom: 12px;
+            margin-top: 8px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .condition-name {
+            font-size: 38px;
+            color: #ff5a6e;
+            font-weight: bold;
+            margin: 20px 0 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+
+        .search-icon {
+            font-size: 22px;
+            color: #3dd9ff;
+            cursor: pointer;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .search-icon:hover {
+            transform: scale(1.3);
+        }
+
+        .buttons-group {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 25px 0 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 26px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.3s;
+            letter-spacing: 0px;
+        }
+
+        .btn-speak {
+            background: #3b9aef;
+            color: white;
+        }
+
+        .btn-speak:hover {
+            background: #2878c3;
+            transform: scale(1.05);
+        }
+
+        .btn-stop {
+            background: #e85d5f;
+            color: white;
+        }
+
+        .btn-stop:hover {
+            background: #c74547;
+            transform: scale(1.05);
+        }
+
+        .btn-records {
+            background: #3abc5e;
+            color: white;
+        }
+
+        .btn-records:hover {
+            background: #2a8a47;
+            transform: scale(1.05);
+        }
+
+        .other-possibilities {
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            margin: 22px 0 18px 0;
+            font-size: 15px;
+            color: #8fa8b6;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .other-possibilities strong {
+            color: #99b4c1;
+            font-weight: 600;
+        }
+
+        .note {
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            margin: 18px 0 28px 0;
+            font-size: 13px;
+            color: #8fa8b6;
+            font-style: italic;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .check-again-btn {
+            background: #3abc5e;
+            color: white;
+            padding: 13px 42px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: all 0.3s;
+            letter-spacing: 0px;
+        }
+
+        .check-again-btn:hover {
+            background: #2a8a47;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 25px 20px;
+            }
+
+            .header {
+                padding: 15px 15px;
+            }
+
+            .condition-name {
+                font-size: 32px;
+            }
+
+            .patient-info-box {
+                flex-direction: column;
+                text-align: center;
+                max-width: 280px;
+            }
+
+            .stethoscope-icon {
+                margin-left: 0;
+                margin-top: 12px;
+            }
+
+            .buttons-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-arrow-left back-btn" onclick="goBack()"></i>
+            <div class="header-title">Diagnosis Result</div>
+            <div class="header-spacer"></div>
+        </div>
+
+        <div class="content">
+            <!-- Patient Info -->
+            <div class="patient-info-box">
+                <div class="patient-details">
+                    <div>👤 <strong>Name:</strong> {{ name }}</div>
+                    <div>📅 <strong>Age:</strong> {{ age }}</div>
+                </div>
+                <i class="fas fa-stethoscope stethoscope-icon"></i>
+            </div>
+
+            <!-- Condition Display -->
+            <div class="condition-label">Possible Condition:</div>
+            <div class="condition-name">
+                {{ prediction }}
+                <i class="fas fa-search search-icon" onclick="searchDisease('{{ prediction }}')"></i>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="buttons-group">
+                <button class="btn-speak" onclick="speakResult()">
+                    <i class="fas fa-volume-up"></i> Speak Result
+                </button>
+                <button class="btn-stop" onclick="stopSpeech()">
+                    <i class="fas fa-stop"></i> Stop
+                </button>
+                <button class="btn-records" onclick="viewRecords()">
+                    <i class="fas fa-database"></i> View Patient Records
+                </button>
+            </div>
+
+            <!-- Other Possibilities -->
+            {% if others %}
+            <div class="other-possibilities">
+                <strong>Other Possibilities:</strong> {{ others|join(', ') }}
+            </div>
+            {% endif %}
+
+            <!-- Note -->
+            <div class="note">
+                <strong>Note:</strong> This is an AI-based prediction. Consult a doctor for a proper diagnosis.
+            </div>
+
+            <!-- Check Again Button -->
+            <button class="check-again-btn" onclick="window.location.href='/'">
+                Check Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        function speakResult() {
+            const text = `Hello {{ name }}. Your age is {{ age }}. Your predicted condition is {{ prediction }}. Other possibilities include {{ others|join(", ") if others else "none" }}`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+        }
+
+        function searchDisease(disease) {
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(disease)}`, '_blank');
+        }
+
+        function viewRecords() {
+            window.location.href = '/patients';
+        }
+    </script>
+</body>
+</html>
